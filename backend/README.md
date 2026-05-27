@@ -29,6 +29,6 @@ Important: the backend wrapper reads `Untitled37.ipynb` from the repository root
 
 Suggested settings:
 
-- Build command: `cd backend && pip install -r requirements.txt`
-- Start command: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Build command: `cd backend && python -m pip install -r requirements.txt`
+- Start command: `cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 - Environment: `FRONTEND_ORIGIN=https://your-frontend-domain`

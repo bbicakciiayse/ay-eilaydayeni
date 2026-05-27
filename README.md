@@ -41,8 +41,8 @@ Set `VITE_API_URL` in the frontend deployment environment to the deployed backen
 
 Because the backend safely loads the unchanged notebook from the repository root, deploy the backend with the repository root available and use backend-prefixed commands:
 
-- Build command: `cd backend && pip install -r requirements.txt`
-- Start command: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Build command: `cd backend && python -m pip install -r requirements.txt`
+- Start command: `cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 - Environment: `FRONTEND_ORIGIN=https://your-frontend-domain`
 
 The included root `Procfile` uses the same start command for Railway/Render-style deployments.
