@@ -26,6 +26,6 @@ Deploy to Vercel or Netlify and set `VITE_API_URL` to the deployed backend URL.
 Suggested settings:
 
 - Root directory: `frontend`
-- Build command: `npm run build`
-- Publish directory: `dist`
+- Builder: Dockerfile
+- Dockerfile path: `Dockerfile`
 - Environment: `VITE_API_URL=https://your-backend-domain`

@@ -56,3 +56,5 @@ Deploy the `frontend/` folder.
 - Environment: `VITE_API_URL=https://your-backend-domain`
 
 For Railway, create a second service from the same GitHub repository and set its root directory to `frontend`. The `frontend/railway.json` file is already configured for this service.
+
+The frontend Railway service is also Dockerfile-based. Set `VITE_API_URL` before deploying because Vite reads this value during the build.
