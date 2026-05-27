@@ -1,0 +1,56 @@
+# Pricing Intelligence App
+
+Deployment-ready monorepo for a pricing intelligence and win/loss prediction web application.
+
+## Structure
+
+- `frontend/` React + Vite application
+- `backend/` Python FastAPI application
+- `Untitled37.ipynb` original notebook model source
+
+The notebook is intentionally left unchanged. The backend now includes a safe notebook wrapper that loads notebook function definitions without running the notebook's main execution block, so preprocessing, feature engineering, and model logic can be used from FastAPI without editing the notebook.
+
+## Local Development
+
+Backend:
+
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Deployment
+
+- Frontend: Vercel or Netlify
+- Backend: Render or Railway
+
+Set `VITE_API_URL` in the frontend deployment environment to the deployed backend URL.
+
+### Backend Deployment Notes
+
+Because the backend safely loads the unchanged notebook from the repository root, deploy the backend with the repository root available and use backend-prefixed commands:
+
+- Build command: `cd backend && pip install -r requirements.txt`
+- Start command: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Environment: `FRONTEND_ORIGIN=https://your-frontend-domain`
+
+The included root `Procfile` uses the same start command for Railway/Render-style deployments.
+
+### Frontend Deployment Notes
+
+Deploy the `frontend/` folder.
+
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Environment: `VITE_API_URL=https://your-backend-domain`
