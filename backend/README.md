@@ -32,3 +32,5 @@ Suggested Railway settings:
 - Builder: Dockerfile
 - Dockerfile path: `Dockerfile`
 - Environment: `FRONTEND_ORIGIN=https://your-frontend-domain`
+
+If Railway shows `The executable cd could not be found`, remove any manually configured Start Command in the Railway dashboard. The Dockerfile already contains the correct CMD.

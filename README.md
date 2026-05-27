@@ -47,6 +47,8 @@ Because the backend safely loads the unchanged notebook from the repository root
 
 For Railway, the root `railway.json` is already configured for the backend service. Create the backend service from the repository root.
 
+If Railway shows `The executable cd could not be found`, remove any manually configured Start Command in the Railway dashboard. The backend Dockerfile already contains the correct CMD.
+
 ### Frontend Deployment Notes
 
 Deploy the `frontend/` folder.
