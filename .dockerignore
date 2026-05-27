@@ -1,0 +1,15 @@
+.git
+.gitignore
+frontend/node_modules
+frontend/dist
+frontend/.env
+frontend/.env.local
+backend/.env
+backend/app/data/uploaded/*
+backend/app/data/results/*
+!backend/app/data/uploaded/.gitkeep
+!backend/app/data/results/.gitkeep
+__pycache__
+*.pyc
+artifacts
+backend/artifacts

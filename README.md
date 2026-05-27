@@ -58,3 +58,5 @@ Deploy the `frontend/` folder.
 For Railway, create a second service from the same GitHub repository and set its root directory to `frontend`. The `frontend/railway.json` file is already configured for this service.
 
 The frontend Railway service is also Dockerfile-based. Set `VITE_API_URL` before deploying because Vite reads this value during the build.
+
+Docker ignore files are included so Railway does not upload local `node_modules`, build output, cached Python files, or saved runtime data into the deployment image.

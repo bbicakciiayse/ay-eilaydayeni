@@ -12,4 +12,4 @@ ENV VITE_API_URL=$VITE_API_URL
 
 RUN npm run build
 
-CMD npm run start -- --host 0.0.0.0 --port ${PORT:-4173}
+CMD npm run start -- --port ${PORT:-4173}
