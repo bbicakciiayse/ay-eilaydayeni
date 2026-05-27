@@ -27,8 +27,8 @@ Deploy to Render or Railway.
 
 Important: the backend wrapper reads `Untitled37.ipynb` from the repository root. Keep the repository root available during backend deployment.
 
-Suggested settings:
+Suggested Railway settings:
 
-- Build command: `cd backend && python -m pip install -r requirements.txt`
-- Start command: `cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Builder: Dockerfile
+- Dockerfile path: `Dockerfile`
 - Environment: `FRONTEND_ORIGIN=https://your-frontend-domain`

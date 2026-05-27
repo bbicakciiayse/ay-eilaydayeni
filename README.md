@@ -39,13 +39,11 @@ Set `VITE_API_URL` in the frontend deployment environment to the deployed backen
 
 ### Backend Deployment Notes
 
-Because the backend safely loads the unchanged notebook from the repository root, deploy the backend with the repository root available and use backend-prefixed commands:
+Because the backend safely loads the unchanged notebook from the repository root, deploy the backend with the repository root available. The backend service is configured for Railway with the root `Dockerfile` and `railway.json`.
 
-- Build command: `cd backend && python -m pip install -r requirements.txt`
-- Start command: `cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Builder: Dockerfile
+- Dockerfile path: `Dockerfile`
 - Environment: `FRONTEND_ORIGIN=https://your-frontend-domain`
-
-The included root `Procfile` uses the same start command for Railway/Render-style deployments.
 
 For Railway, the root `railway.json` is already configured for the backend service. Create the backend service from the repository root.
 
