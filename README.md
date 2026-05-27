@@ -47,6 +47,8 @@ Because the backend safely loads the unchanged notebook from the repository root
 
 The included root `Procfile` uses the same start command for Railway/Render-style deployments.
 
+For Railway, the root `railway.json` is already configured for the backend service. Create the backend service from the repository root.
+
 ### Frontend Deployment Notes
 
 Deploy the `frontend/` folder.
@@ -54,3 +56,5 @@ Deploy the `frontend/` folder.
 - Build command: `npm run build`
 - Publish directory: `dist`
 - Environment: `VITE_API_URL=https://your-backend-domain`
+
+For Railway, create a second service from the same GitHub repository and set its root directory to `frontend`. The `frontend/railway.json` file is already configured for this service.
