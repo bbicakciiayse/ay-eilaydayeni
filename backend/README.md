@@ -34,3 +34,5 @@ Suggested Railway settings:
 - Environment: `FRONTEND_ORIGIN=https://your-frontend-domain`
 
 If Railway shows `The executable cd could not be found`, remove any manually configured Start Command in the Railway dashboard. The Dockerfile already contains the correct CMD.
+
+The repository `railway.json` also defines a `startCommand` without `cd`, so a fresh Railway deploy from GitHub can be deployed directly without manual command changes.
