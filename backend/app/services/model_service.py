@@ -27,7 +27,7 @@ AUTO_FEATURES = {
     "Project_End_Known",
 }
 
-runtime = load_notebook_model()
+runtime = None
 
 model_state: dict[str, Any] = {
     "target_column": None,
@@ -40,12 +40,20 @@ model_state: dict[str, Any] = {
 }
 
 
+def get_runtime():
+    global runtime
+    if runtime is None:
+        runtime = load_notebook_model()
+    return runtime
+
+
 def _prepare_dataset(target_column: str):
-    df = runtime.standardize_column_names(get_current_dataset())
+    nb = get_runtime()
+    df = nb.standardize_column_names(get_current_dataset())
     if target_column not in df.columns:
         raise ValueError(f"Target column not found: {target_column}")
 
-    y = runtime.map_target(df[target_column])
+    y = nb.map_target(df[target_column])
     valid_mask = ~y.isna()
     if valid_mask.sum() == 0:
         raise ValueError("Target column does not contain valid won/lost values.")
@@ -56,21 +64,21 @@ def _prepare_dataset(target_column: str):
         raise ValueError("Target column must contain both won and lost classes.")
 
     X = df.drop(columns=[target_column]).copy()
-    removable = {col for col in runtime.LEAKAGE_RISK_COLUMNS if col in X.columns}
-    removable.update(runtime.find_suspicious_columns(list(X.columns)))
+    removable = {col for col in nb.LEAKAGE_RISK_COLUMNS if col in X.columns}
+    removable.update(nb.find_suspicious_columns(list(X.columns)))
     removed_columns = sorted(removable)
     if removed_columns:
         X = X.drop(columns=removed_columns)
 
-    X, engineered_columns = runtime.add_feature_engineering(X)
+    X, engineered_columns = nb.add_feature_engineering(X)
     numerical_cols = [col for col in X.columns if pd.api.types.is_numeric_dtype(X[col])]
     categorical_cols = [col for col in X.columns if col not in numerical_cols]
     for col in categorical_cols:
         X[col] = X[col].fillna("missing").astype(str)
 
-    price_col = runtime.find_column_ignore_case(X.columns, runtime.PRICE_COLUMN) or runtime.PRICE_COLUMN
+    price_col = nb.find_column_ignore_case(X.columns, nb.PRICE_COLUMN) or nb.PRICE_COLUMN
     if price_col not in X.columns:
-        raise ValueError(f"Price column not found after preprocessing: {runtime.PRICE_COLUMN}")
+        raise ValueError(f"Price column not found after preprocessing: {nb.PRICE_COLUMN}")
 
     return {
         "X": X,
@@ -96,18 +104,19 @@ def _best_model_name(comparison_df: pd.DataFrame):
 
 
 def train_notebook_model(request: TrainRequest):
+    nb = get_runtime()
     data = _prepare_dataset(request.target_column)
-    engineered_df, removed_df = runtime.build_engineered_feature_table(data)
-    impact_df = runtime.evaluate_feature_additions(data)
-    final_features, final_features_df, dropped_df = runtime.build_final_feature_set(data, impact_df)
-    all_results = runtime.run_feature_subset_nested_cv_comparison(
+    engineered_df, removed_df = nb.build_engineered_feature_table(data)
+    impact_df = nb.evaluate_feature_additions(data)
+    final_features, final_features_df, dropped_df = nb.build_final_feature_set(data, impact_df)
+    all_results = nb.run_feature_subset_nested_cv_comparison(
         data["X"],
         data["y"],
         data_dict=data,
         selected_features=final_features,
     )
-    comparison_df = runtime.combine_all_nested_subset_results(all_results)
-    final_model, base_scenario = runtime.build_lasso_price_probability_model(
+    comparison_df = nb.combine_all_nested_subset_results(all_results)
+    final_model, base_scenario = nb.build_lasso_price_probability_model(
         data["X"],
         data["y"],
         final_features,
@@ -201,6 +210,7 @@ def _scenario_from_values(values: dict):
 
 
 def predict_notebook_result(request: PredictionRequest):
+    nb = get_runtime()
     data = model_state.get("data")
     if data is None or model_state.get("final_model") is None:
         raise ValueError("Train the model before prediction.")
@@ -208,7 +218,7 @@ def predict_notebook_result(request: PredictionRequest):
     scenario = _scenario_from_values(request.values)
     price_col = data["price_col"]
     price = float(scenario[price_col])
-    probability = runtime.predict_win_probability_for_price(
+    probability = nb.predict_win_probability_for_price(
         model_state["final_model"],
         scenario,
         model_state["final_features"],
@@ -227,6 +237,7 @@ def predict_notebook_result(request: PredictionRequest):
 
 
 def build_price_sensitivity_for_values(values: dict, min_price=None, max_price=None, step_size=None, selected_price=None):
+    nb = get_runtime()
     data = model_state.get("data")
     if data is None or model_state.get("final_model") is None:
         raise ValueError("Train the model before price sensitivity analysis.")
@@ -245,7 +256,7 @@ def build_price_sensitivity_for_values(values: dict, min_price=None, max_price=N
     points = []
     current_price = min_price
     while current_price <= max_price + 1e-9:
-        probability = runtime.predict_win_probability_for_price(
+        probability = nb.predict_win_probability_for_price(
             model_state["final_model"],
             scenario,
             model_state["final_features"],
