@@ -35,4 +35,4 @@ Suggested Railway settings:
 
 If Railway shows `The executable cd could not be found`, remove any manually configured Start Command in the Railway dashboard. The Dockerfile already contains the correct CMD.
 
-The repository `railway.json` intentionally does not define a start command. Railway should use the backend Dockerfile `CMD` directly.
+The repository `railway.json` intentionally does not define a start command or healthcheck. Railway should use the backend Dockerfile `CMD` directly, and `/health` can be tested manually after deployment.
